@@ -73,7 +73,15 @@ class App(ctk.CTk):
             perfil_frame = ctk.CTkFrame(master=self, width=700, height= 400)
             perfil_frame.pack(side=RIGHT)
 
-            titulo = ctk.CTkLabel(master=perfil_frame, text = 'Cadastre os perfis do sistema', font=('Century Gothic bold',16),  text_color='gray').place(x=20,y=10)
+            titulo = ctk.CTkLabel(master=perfil_frame, text = 'Cadastro do perfil de acesso', font=('Century Gothic bold',16), text_color='gray').place(x=20,y=10)
+            label_codigo_perfil = ctk.CTkLabel(master=perfil_frame, text = 'Digite o código do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=265,y=65)
+            codigo_perfil = ctk.CTkEntry(master=perfil_frame,placeholder_text= 'CDG', width=300).place(x=200, y=100)
+
+            label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Nome do perfil', font=('Century Gothic bold',16), text_color='#fff').place(x=295,y=140)
+            nome_perfil = ctk.CTkEntry(master=perfil_frame,placeholder_text= 'Nome', width=300).place(x=200, y=175)
+
+            label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Descrição', font=('Century Gothic bold',16), text_color='#fff').place(x=300,y=215)
+            Caixa_de_texto = ctk.CTkTextbox(master=perfil_frame, width=300, height=120).place(x=200, y=250)
 
 
             def back():
@@ -143,7 +151,7 @@ class App(ctk.CTk):
             
         #BOTÃOS DA TELA INICIAL 
         cadastroSistema = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_sistemas).place(x=10,y=70)
-        cadastroPerfis = ctk.CTkButton(master=inicial_frame,text='Cadastros dos perfils Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil).place(x=10,y=150)
+        cadastroPerfis = ctk.CTkButton(master=inicial_frame,text='Cadastros dos perfis do Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil).place(x=10,y=150)
         cadastroSMatriz = ctk.CTkButton(master=inicial_frame,text='Cadastros da matriz SOD',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_matriz).place(x=400,y=70)
         cadastroPerfiluser = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Perfils de usuarios',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil_user).place(x=400,y=150)
         
