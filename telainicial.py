@@ -1,18 +1,113 @@
 from typing import Optional, Tuple, Union
 import customtkinter as ctk
 from tkinter import *
+from tkinter.ttk import *
 from tkinter import messagebox
 import openpyxl, xlrd
 import pathlib
-from openpyxl import workbook
+from openpyxl import Workbook
 from PIL import Image
+import pandas as pd 
 
+class Backend():   
+    def salvando(self):
+        arquivo = pathlib.Path('sistemaEscola.xlsx')
+        if arquivo.exists():
+            pass
+        else:
+            #FOLHA DA FUNÇÃO SISTEMA
+            arquivo = Workbook()
+            folha1 = arquivo.active
+            folha1.title = 'Sistema'
+            folha1['A1'] = 'CODIGO'
+            folha1['B1'] = 'NOME'
+            
+            #FOLHA DA FUNÇÃO PERFIL DO SISTEMA 
+            folha2=arquivo.create_sheet('perfilSistema')
+            folha2['A1'] = 'CODIGO'
+            folha2['B1'] = 'NOME'
+            folha2['C1'] = 'DESCRIÇÃO'
 
-class App(ctk.CTk):
+            #FOLHA DA FUNÇÃO MATRIZSOD 
+            folha3=arquivo.create_sheet('matrizSOD')
+            folha3['A1'] = 'CODIGO1'
+            folha3['B1'] = 'NOME1'
+            folha3['C1'] = 'CODIGO2'
+            folha3['D1'] = 'NOME2'
+            arquivo.save(r'sistemaEscola.xlsx')
+            
+    def salvaSistema(self):
+        #pegar os daos que estão no formulario do sistema 
+        self.codigo = self.codigoSistemas.get()
+        self.sistema = self.nomeSistemas.get()
+
+        #salvar os dados na folha do excel
+        if(self.codigo=='' or self.sistema==''):
+            messagebox.showerror('sistema','ERRO\n Por favor prencha todos os campos')
+        else:
+            arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
+            folha1 = arquivo.get_sheet_by_name(r'Sistema')
+            folha1.cell(column=1, row=folha1.max_row+1, value=self.codigo)
+            folha1.cell(column=2, row=folha1.max_row, value=self.sistema)
+            arquivo.save(r'sistemaEscola.xlsx')
+            msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! serviço cadastrado com sucesso")
+
+            #apagando o texto das entrys
+            self.codigoSistemas.set('')
+            self.nomeSistemas.set('')
+
+    def salvaPerfilServico(self):
+        #pegar os daos que estão no formulario do sistema 
+        self.codigo = self.codigo_perfil.get()
+        self.sistema = self.nome_perfil.get()
+        self.caixa = self.r_caixaTexto.get('0.0', 'end')
+
+        #salvar os dados na folha do excel
+        if(self.codigo=='' or self.sistema=='' or self.caixa==''):
+            messagebox.showerror('sistema','ERRO\n Por favor prencha todos os campos')
+        else:
+            arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
+            folha2 = arquivo.get_sheet_by_name(r'perfilSistema')
+            folha2.cell(column=1, row=folha2.max_row+1, value=self.codigo)
+            folha2.cell(column=2, row=folha2.max_row, value=self.sistema)
+            folha2.cell(column=3, row=folha2.max_row, value=self.caixa)
+            arquivo.save(r'sistemaEscola.xlsx')
+            msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! perfil do serviço cadastrado com sucesso")
+
+            #apagando o texto das entrys
+            self.codigo_perfil.set('')
+            self.nome_perfil.set('')
+            self.r_caixaTexto.delete('0.0','end')
+    
+    def salvaMatriz(self):
+        #pegar os dados que estão no formulario do sistema 
+        self.codigo1 = self.codigo_sistema_1.get()
+        self.sistema1 = self.nome_sistema_1.get()
+        self.codigo2 = self.codigo_sistema_2.get()
+        self.sistema2 = self.nome_sistema_2.get()
+
+        #salvar os dados na folha do excel
+        if(self.codigo1=='' or self.sistema1=='' or self.codigo2=='' or self.sistema2==''):
+            messagebox.showerror('sistema','ERRO\n Por favor selecione todos os campos')
+        else:
+            arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
+            folha3 = arquivo.get_sheet_by_name(r'matrizSOD')
+            folha3.cell(column=1, row=folha3.max_row+1, value=self.codigo1)
+            folha3.cell(column=2, row=folha3.max_row, value=self.sistema1)
+            folha3.cell(column=3, row=folha3.max_row, value=self.codigo2)
+            folha3.cell(column=4, row=folha3.max_row, value=self.sistema2)
+            arquivo.save(r'sistemaEscola.xlsx')
+            msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! Matriz de conflito cadastrado com sucesso")
+
+            #apagando o texto das entrys
+            
+
+class App(ctk.CTk, Backend):
     def __init__(self):
         super().__init__()
         self.tema()
         self.tela()
+        self.salvando()
         self.tela_inicial()
     
     def tema(self):
@@ -47,10 +142,12 @@ class App(ctk.CTk):
 
             titulo = ctk.CTkLabel(master=sistema_frame, text = 'Cadastre os sistemas', font=('Century Gothic bold',16), text_color='gray').place(x=20,y=10)
             label_codigo = ctk.CTkLabel(master=sistema_frame, text = 'Digite o codigo do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=265,y=65)
-            codigo_sistemas = ctk.CTkEntry(master=sistema_frame,placeholder_text= 'CDG', width=300).place(x=200, y=100)
+            self.codigoSistemas = ctk.CTkEntry(master=sistema_frame,placeholder_text= 'CDG', width=300)
+            self.codigoSistemas.place(x=200, y=100)
             
             label_sistema = ctk.CTkLabel(master=sistema_frame, text = 'Digite o nome do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=265,y=140)
-            nome_sistemas = ctk.CTkEntry(master=sistema_frame,placeholder_text= 'Sistema', width=300).place(x=200, y=175)
+            self.nomeSistemas = ctk.CTkEntry(master=sistema_frame,placeholder_text= 'Sistema', width=300)
+            self.nomeSistemas.place(x=200, y=175)
             
             def back():
                 #removendo frame
@@ -61,10 +158,7 @@ class App(ctk.CTk):
                 
             voltar = ctk.CTkButton(master=sistema_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
 
-            def salva_servico():
-                msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! serviço cadastrado com sucesso")
-
-            salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_servico ).place(x=545, y=350)
+            self.salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaSistema).place(x=545, y=350)
         def tela_perfil():
             #remover tela inicial
             inicial_frame.pack_forget()
@@ -73,16 +167,23 @@ class App(ctk.CTk):
             perfil_frame = ctk.CTkFrame(master=self, width=700, height= 400)
             perfil_frame.pack(side=RIGHT)
 
+            #pegar um datafreme
+            dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
+            valor = dataframe.loc[:,'CODIGO']
+            
+
             titulo = ctk.CTkLabel(master=perfil_frame, text = 'Cadastro do perfil de acesso', font=('Century Gothic bold',16), text_color='gray').place(x=20,y=10)
             label_codigo_perfil = ctk.CTkLabel(master=perfil_frame, text = 'Digite o código do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=265,y=65)
-            codigo_perfil = ctk.CTkEntry(master=perfil_frame,placeholder_text= 'CDG', width=300).place(x=200, y=100)
-
+            self.codigo_perfil = ctk.CTkComboBox(master=perfil_frame, values=list(valor))
+            self.codigo_perfil.place(x=280, y=100)
+            
             label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Nome do perfil', font=('Century Gothic bold',16), text_color='#fff').place(x=295,y=140)
-            nome_perfil = ctk.CTkEntry(master=perfil_frame,placeholder_text= 'Nome', width=300).place(x=200, y=175)
+            self.nome_perfil = ctk.CTkEntry(master=perfil_frame,placeholder_text= 'Nome', width=300)
+            self.nome_perfil.place(x=200, y=175)
 
             label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Descrição', font=('Century Gothic bold',16), text_color='#fff').place(x=300,y=215)
-            Caixa_de_texto = ctk.CTkTextbox(master=perfil_frame, width=300, height=120).place(x=200, y=250)
-
+            self.r_caixaTexto = ctk.CTkTextbox(master=perfil_frame, width=300, height=120, corner_radius=0)
+            self.r_caixaTexto.place(x=200, y=250)
 
             def back():
                 #removendo frame
@@ -92,11 +193,8 @@ class App(ctk.CTk):
                 inicial_frame.pack(side=RIGHT)
             
             voltar = ctk.CTkButton(master=perfil_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-            
-            def salva_perfil():
-                msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! perfil do serviço cadastrado com sucesso")
-                
-            salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_perfil ).place(x=545, y=350)
+               
+            self.salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaPerfilServico ).place(x=545, y=350)
             
         def tela_matriz():
             #remover tela inicial
@@ -105,10 +203,50 @@ class App(ctk.CTk):
             #criando tela de cadastro de sistema
             matriz_frame = ctk.CTkFrame(master=self, width=700, height= 400)
             matriz_frame.pack(side=RIGHT)
+
+            #recuperando os valores do banco de dados
+            dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
+            COD = dataframe.loc[:,'CODIGO']
+            
+            #FILTRANDO OS PERFIS DE CADA SISTEMA
+            dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
+            nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']=='EDC','NOME']
+
+            dataframeMatriz2 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
+            nomematriz2 = dataframeMatriz2.loc[dataframeMatriz1['CODIGO']=='CDN','NOME']
             
             titulo = ctk.CTkLabel(master=matriz_frame, text = 'Cadastre dos conflitos', font=('Century Gothic bold',16), text_color='gray').place(x=20,y=10)
 
 
+            labem_Ma_codigo_1 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o primeiro codigo do sistema ', font=('Century Gothic bold',16), text_color='#fff').place(x=220,y=35)
+            self.nome_sistema_1 = ctk.CTkComboBox(master=matriz_frame,values=[''])
+            self.nome_sistema_1.place(x=270, y=147)
+            def combobox_callback(choice):
+                if (choice=='EDC'):
+                    self.nome_sistema_1 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz1))
+                    self.nome_sistema_1.place(x=270, y=147)
+                else:
+                    self.nome_sistema_1 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz2))
+                    self.nome_sistema_1.place(x=270, y=147)
+            label_sistema_1 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o perfil do sistema 1 ', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=110)            
+            self.codigo_sistema_1 = ctk.CTkComboBox(master=matriz_frame, values=list(COD),command=combobox_callback)
+            self.codigo_sistema_1.place(x=270, y=70)
+         
+
+            labem_Ma_codigo_2 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o segundo codigo do sistema ', font=('Century Gothic bold',16), text_color='#fff').place(x=220,y=210)
+            nome_sistema_2 = ctk.CTkComboBox(master=matriz_frame,values=['']).place(x=270, y=320)
+            def combobox_callback(choice):
+                if (choice=='EDC'):
+                    self.nome_sistema_2 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz1))
+                    self.nome_sistema_2.place(x=270, y=320)
+                else:
+                    self.nome_sistema_2 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz2))
+                    self.nome_sistema_2.place(x=270, y=320)
+            label_sistema_2 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o perfil do sistema 2 ', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=285)
+            self.codigo_sistema_2 = ctk.CTkComboBox(master=matriz_frame, values=list(COD),command=combobox_callback)
+            self.codigo_sistema_2.place(x=270, y=245)
+            
+            
             def back():
                 #removendo frame
                 matriz_frame.pack_forget()
@@ -117,10 +255,7 @@ class App(ctk.CTk):
                 inicial_frame.pack(side=RIGHT)
             voltar = ctk.CTkButton(master=matriz_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
 
-            def salva_matriz():
-                msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! conflito de perfis cadastrado com sucesso")
-
-            salvar = ctk.CTkButton(master=matriz_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_matriz ).place(x=545, y=350)
+            salvar = ctk.CTkButton(master=matriz_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaMatriz).place(x=545, y=350)
             
 
         def tela_perfil_user():
