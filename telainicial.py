@@ -278,9 +278,6 @@ class App(ctk.CTk, Backend):
             
             voltar = ctk.CTkButton(master=perfilU_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
             
-            def salva_user():
-                msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! usuario cadastrado com sucesso")
-            
             salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_user ).place(x=545, y=350)
             
             
