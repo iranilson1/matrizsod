@@ -100,7 +100,8 @@ class Backend():
             msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! Matriz de conflito cadastrado com sucesso")
 
             #apagando o texto das entrys
-            
+    def salvarUser(self):
+        pass            
 
 class App(ctk.CTk, Backend):
     def __init__(self):
@@ -208,25 +209,17 @@ class App(ctk.CTk, Backend):
             dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
             COD = dataframe.loc[:,'CODIGO']
             
-            #FILTRANDO OS PERFIS DE CADA SISTEMA
-            dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
-            nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']=='EDC','NOME']
-
-            dataframeMatriz2 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
-            nomematriz2 = dataframeMatriz2.loc[dataframeMatriz1['CODIGO']=='CDN','NOME']
-            
             titulo = ctk.CTkLabel(master=matriz_frame, text = 'Cadastre dos conflitos', font=('Century Gothic bold',16), text_color='gray').place(x=20,y=10)
-
 
             labem_Ma_codigo_1 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o primeiro codigo do sistema ', font=('Century Gothic bold',16), text_color='#fff').place(x=220,y=35)
             self.nome_sistema_1 = ctk.CTkComboBox(master=matriz_frame,values=[''])
             self.nome_sistema_1.place(x=270, y=147)
             def combobox_callback(choice):
-                if (choice=='EDC'):
+                if (choice):
+                    #FILTRANDO OS PERFIS DE CADA SISTEMA
+                    dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
+                    nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']==choice,'NOME']
                     self.nome_sistema_1 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz1))
-                    self.nome_sistema_1.place(x=270, y=147)
-                else:
-                    self.nome_sistema_1 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz2))
                     self.nome_sistema_1.place(x=270, y=147)
             label_sistema_1 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o perfil do sistema 1 ', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=110)            
             self.codigo_sistema_1 = ctk.CTkComboBox(master=matriz_frame, values=list(COD),command=combobox_callback)
@@ -236,11 +229,11 @@ class App(ctk.CTk, Backend):
             labem_Ma_codigo_2 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o segundo codigo do sistema ', font=('Century Gothic bold',16), text_color='#fff').place(x=220,y=210)
             nome_sistema_2 = ctk.CTkComboBox(master=matriz_frame,values=['']).place(x=270, y=320)
             def combobox_callback(choice):
-                if (choice=='EDC'):
+                if (choice):
+                    #FILTRANDO OS PERFIS DE CADA SISTEMA
+                    dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
+                    nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']==choice,'NOME']
                     self.nome_sistema_2 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz1))
-                    self.nome_sistema_2.place(x=270, y=320)
-                else:
-                    self.nome_sistema_2 = ctk.CTkComboBox(master=matriz_frame,values=list(nomematriz2))
                     self.nome_sistema_2.place(x=270, y=320)
             label_sistema_2 = ctk.CTkLabel(master=matriz_frame, text = 'Escolha o perfil do sistema 2 ', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=285)
             self.codigo_sistema_2 = ctk.CTkComboBox(master=matriz_frame, values=list(COD),command=combobox_callback)
@@ -267,8 +260,30 @@ class App(ctk.CTk, Backend):
             perfilU_frame.pack(side=RIGHT)
 
             titulo = ctk.CTkLabel(master=perfilU_frame, text = 'Cadastre os perfis dos usuarios', font=('Century Gothic bold',16),  text_color='gray').place(x=20,y=10)
+            
+            #recuperando os valores do banco de dados
+            dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
+            COD = dataframe.loc[:,'CODIGO']
+            
 
+            label = ctk.CTkLabel(master=perfilU_frame, text= 'Digite o CPF', font=('Century Gothic bold',16), text_color='#fff').place(x=290,y=35)
+            self.cpf=ctk.CTkEntry(master=perfilU_frame, placeholder_text= 'xxx.xxx.xxx.-xx', width=200)
+            self.cpf.place(x=240,y=70)
+            labem_Ma_codigo_1 = ctk.CTkLabel(master=perfilU_frame, text = 'Escolha o codigo do sistema ', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=110)
+            self.nome_sistema = ctk.CTkComboBox(master=perfilU_frame,values=[''])
+            self.nome_sistema.place(x=270, y=220)
+            def combobox_callback(choice):
+                #FILTRANDO OS PERFIS DE CADA SISTEMA
+                dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
+                nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']==choice,'NOME']
 
+                self.nome_sistema_1 = ctk.CTkComboBox(master=perfilU_frame,values=list(nomematriz1))
+                self.nome_sistema_1.place(x=270, y=220)
+
+            label_sistema_1 = ctk.CTkLabel(master=perfilU_frame, text = 'Escolha o perfil do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=185)            
+            self.codigo_sistema_1 = ctk.CTkComboBox(master=perfilU_frame, values=list(COD),command=combobox_callback)
+            self.codigo_sistema_1.place(x=270, y=145)
+            
             def back():
                 #removendo frame
                 perfilU_frame.pack_forget()
@@ -278,7 +293,7 @@ class App(ctk.CTk, Backend):
             
             voltar = ctk.CTkButton(master=perfilU_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
             
-            salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_user ).place(x=545, y=350)
+            salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser ).place(x=545, y=350)
             
             
         #BOTÃOS DA TELA INICIAL 
