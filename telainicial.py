@@ -34,6 +34,12 @@ class Backend():
             folha3['B1'] = 'NOME1'
             folha3['C1'] = 'CODIGO2'
             folha3['D1'] = 'NOME2'
+
+            #FOLHA DA FUNÇÃO perfiluser
+            folha4=arquivo.create_sheet('PerfilUser')
+            folha4['A1'] = 'CPF'
+            folha4['B1'] = 'CODIGO'
+            folha4['C1'] = 'NOME'
             arquivo.save(r'sistemaEscola.xlsx')
             
     def salvaSistema(self):
@@ -101,7 +107,46 @@ class Backend():
 
             #apagando o texto das entrys
     def salvarUser(self):
-        pass            
+        #pegar os dados que estão no formulario do sistema 
+        self.cpfs = int(self.cpf.get())
+        self.codigo = self.codigo_sistema.get()
+        self.nome = self.nome_sistema.get()
+
+        #primeiro vou buscar no banco de dados se esse cpf ja esta cadastrado e qual perfil esta cadastrado 
+        dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='PerfilUser')
+        nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,:]
+        nomematriz2 = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,'NOME']
+        print(nomematriz2)
+        print()
+        #apos isso busco todos os conflitos que os perfis ja cadastrados tem e monto uma lista 
+        dataframeMatriz2 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='matrizSOD')
+        nomematriz3 = dataframeMatriz2.loc[dataframeMatriz2['NOME1']==self.nome,'NOME2']
+        nomematriz4 = dataframeMatriz2.loc[dataframeMatriz2['NOME2']==self.nome,'NOME1']
+        conflito=list(nomematriz3)+list(nomematriz4)
+        #apos ter uma lista de perfis conflitantes para aquele usuario, eu verifico o perfil atual que esta querendo cadastra, se ele esta na lista 
+        erro=0
+        if(self.cpfs=='' or self.codigo=='' or self.nome==''):
+            messagebox.showerror('sistema','ERRO\n Por favor selecione todos os campos')    
+        else:
+            for i in conflito:
+                if i in  list(nomematriz2) :
+                    messagebox.showerror('sistema','ERRO\n Perfil conflitante com um ja cadastrado')
+                    erro = 1
+                    break
+            if erro == 0:
+                #salvar os dados na folha do excel
+                arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
+                folha4 = arquivo.get_sheet_by_name(r'PerfilUser')
+                folha4.cell(column=1, row=folha4.max_row+1, value=self.cpfs)
+                folha4.cell(column=2, row=folha4.max_row, value=self.codigo)
+                folha4.cell(column=3, row=folha4.max_row, value=self.nome)
+                arquivo.save(r'sistemaEscola.xlsx')
+                msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! Perfil de usuario cadastrado com sucesso")
+
+                #apagando o texto das entrys
+                #self.cpf.set('')
+                self.codigo_sistema.set('')
+                self.nome_sistema.set('')           
 
 class App(ctk.CTk, Backend):
     def __init__(self):
@@ -158,7 +203,6 @@ class App(ctk.CTk, Backend):
                 inicial_frame.pack(side=RIGHT)
                 
             voltar = ctk.CTkButton(master=sistema_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-
             self.salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaSistema).place(x=545, y=350)
         def tela_perfil():
             #remover tela inicial
@@ -194,7 +238,6 @@ class App(ctk.CTk, Backend):
                 inicial_frame.pack(side=RIGHT)
             
             voltar = ctk.CTkButton(master=perfil_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-               
             self.salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaPerfilServico ).place(x=545, y=350)
             
         def tela_matriz():
@@ -247,7 +290,6 @@ class App(ctk.CTk, Backend):
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
             voltar = ctk.CTkButton(master=matriz_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-
             salvar = ctk.CTkButton(master=matriz_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaMatriz).place(x=545, y=350)
             
 
@@ -265,9 +307,8 @@ class App(ctk.CTk, Backend):
             dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
             COD = dataframe.loc[:,'CODIGO']
             
-
             label = ctk.CTkLabel(master=perfilU_frame, text= 'Digite o CPF', font=('Century Gothic bold',16), text_color='#fff').place(x=290,y=35)
-            self.cpf=ctk.CTkEntry(master=perfilU_frame, placeholder_text= 'xxx.xxx.xxx.-xx', width=200)
+            self.cpf=ctk.CTkEntry(master=perfilU_frame, placeholder_text= 'xxx.xxx.xxx-xx', width=200)
             self.cpf.place(x=240,y=70)
             labem_Ma_codigo_1 = ctk.CTkLabel(master=perfilU_frame, text = 'Escolha o codigo do sistema ', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=110)
             self.nome_sistema = ctk.CTkComboBox(master=perfilU_frame,values=[''])
@@ -277,12 +318,12 @@ class App(ctk.CTk, Backend):
                 dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
                 nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']==choice,'NOME']
 
-                self.nome_sistema_1 = ctk.CTkComboBox(master=perfilU_frame,values=list(nomematriz1))
-                self.nome_sistema_1.place(x=270, y=220)
+                self.nome_sistema = ctk.CTkComboBox(master=perfilU_frame,values=list(nomematriz1))
+                self.nome_sistema.place(x=270, y=220)
 
             label_sistema_1 = ctk.CTkLabel(master=perfilU_frame, text = 'Escolha o perfil do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=252,y=185)            
-            self.codigo_sistema_1 = ctk.CTkComboBox(master=perfilU_frame, values=list(COD),command=combobox_callback)
-            self.codigo_sistema_1.place(x=270, y=145)
+            self.codigo_sistema = ctk.CTkComboBox(master=perfilU_frame, values=list(COD),command=combobox_callback)
+            self.codigo_sistema.place(x=270, y=145)
             
             def back():
                 #removendo frame
@@ -293,17 +334,13 @@ class App(ctk.CTk, Backend):
             
             voltar = ctk.CTkButton(master=perfilU_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
             
-            salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser ).place(x=545, y=350)
-            
+            salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser ).place(x=545, y=350)           
             
         #BOTÃOS DA TELA INICIAL 
         cadastroSistema = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_sistemas).place(x=10,y=70)
         cadastroPerfis = ctk.CTkButton(master=inicial_frame,text='Cadastros dos perfis do Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil).place(x=10,y=150)
         cadastroSMatriz = ctk.CTkButton(master=inicial_frame,text='Cadastros da matriz SOD',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_matriz).place(x=400,y=70)
         cadastroPerfiluser = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Perfils de usuarios',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil_user).place(x=400,y=150)
-        
-        
-
 
 if __name__=="__main__":
     app = App()
