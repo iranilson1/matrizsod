@@ -47,10 +47,18 @@ class Backend():
         self.codigo = self.codigoSistemas.get()
         self.sistema = self.nomeSistemas.get()
 
+        # Carregue o arquivo Excel em um DataFrame
+        dataframesistema = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
+
+        # Verifique a unicidade dos valores na coluna
+        codigo_duplicados = dataframesistema.loc[dataframesistema['CODIGO']==self.codigo,'CODIGO']
+        nome_duplicados = dataframesistema.loc[dataframesistema['NOME']==self.sistema,'NOME']
+        
+
         #salvar os dados na folha do excel
         if(self.codigo=='' or self.sistema==''):
             messagebox.showerror('sistema','ERRO\n Por favor prencha todos os campos')
-        else:
+        elif(not (list(codigo_duplicados) or list(nome_duplicados))):
             arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
             folha1 = arquivo.get_sheet_by_name(r'Sistema')
             folha1.cell(column=1, row=folha1.max_row+1, value=self.codigo)
@@ -59,8 +67,10 @@ class Backend():
             msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! serviço cadastrado com sucesso")
 
             #apagando o texto das entrys
-            self.codigoSistemas.set('')
-            self.nomeSistemas.set('')
+            #self.codigoSistemas.set('')
+            #self.nomeSistemas.set('')
+        else:
+            messagebox.showerror('sistema','ERRO\n Codigo ou nome ja existentes, verifique a lista cadastrada')
 
     def salvaPerfilServico(self):
         #pegar os daos que estão no formulario do sistema 
@@ -68,10 +78,16 @@ class Backend():
         self.sistema = self.nome_perfil.get()
         self.caixa = self.r_caixaTexto.get('0.0', 'end')
 
+        # Carregue o arquivo Excel em um DataFrame
+        dataframesistema = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
+
+        # Verifique a unicidade dos valores na coluna
+        nome_duplicados = dataframesistema.loc[dataframesistema['NOME']==self.sistema,'NOME']
+
         #salvar os dados na folha do excel
         if(self.codigo=='' or self.sistema=='' or self.caixa==''):
             messagebox.showerror('sistema','ERRO\n Por favor prencha todos os campos')
-        else:
+        elif(not list(nome_duplicados)):
             arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
             folha2 = arquivo.get_sheet_by_name(r'perfilSistema')
             folha2.cell(column=1, row=folha2.max_row+1, value=self.codigo)
@@ -84,6 +100,8 @@ class Backend():
             self.codigo_perfil.set('')
             self.nome_perfil.set('')
             self.r_caixaTexto.delete('0.0','end')
+        else:
+            messagebox.showerror('sistema','ERRO\n Nome ja existentes, verifique a lista cadastrada')
     
     def salvaMatriz(self):
         #pegar os dados que estão no formulario do sistema 
@@ -114,20 +132,21 @@ class Backend():
 
         #primeiro vou buscar no banco de dados se esse cpf ja esta cadastrado e qual perfil esta cadastrado 
         dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='PerfilUser')
-        nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,:]
         nomematriz2 = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,'NOME']
-        print(nomematriz2)
-        print()
-        #apos isso busco todos os conflitos que os perfis ja cadastrados tem e monto uma lista 
+
+        # Verifique a unicidade dos valores na coluna
+        cpf_duplicados = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,'CPF']
+
+        #apos isso busco todos os conflitos que o sistema digitado tem
         dataframeMatriz2 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='matrizSOD')
         nomematriz3 = dataframeMatriz2.loc[dataframeMatriz2['NOME1']==self.nome,'NOME2']
         nomematriz4 = dataframeMatriz2.loc[dataframeMatriz2['NOME2']==self.nome,'NOME1']
         conflito=list(nomematriz3)+list(nomematriz4)
-        #apos ter uma lista de perfis conflitantes para aquele usuario, eu verifico o perfil atual que esta querendo cadastra, se ele esta na lista 
+        #apos ter uma lista de perfis conflitantes, eu verifico se essa lista tem algum argumento constando nos ja cadastrados
         erro=0
         if(self.cpfs=='' or self.codigo=='' or self.nome==''):
             messagebox.showerror('sistema','ERRO\n Por favor selecione todos os campos')    
-        else:
+        elif(not list(cpf_duplicados)):
             for i in conflito:
                 if i in  list(nomematriz2) :
                     messagebox.showerror('sistema','ERRO\n Perfil conflitante com um ja cadastrado')
@@ -146,7 +165,9 @@ class Backend():
                 #apagando o texto das entrys
                 #self.cpf.set('')
                 self.codigo_sistema.set('')
-                self.nome_sistema.set('')           
+                self.nome_sistema.set('')
+        else:
+            messagebox.showerror('sistema', 'ERRO\n CPF ja cadastrado, veja a lista de cpfs cadastrados' )        
 
 class App(ctk.CTk, Backend):
     def __init__(self):
