@@ -29,6 +29,7 @@ class App(ctk.CTk):
         #dentro de inicial frame
         #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\icon.jpg'), size=(300,200))
         #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\Gestao-escolar.jpg'), size=(700,200))
+        icon = ctk.CTkImage(Image.open(r'PROJETOMATRIZSOD/icones/casa.png'))
         #label_img = ctk.CTkLabel(self, image=img, text='').place(x=0,y=10)
         img = ctk.CTkImage(Image.open(r'PROJETOMATRIZSOD/service-1028805_640.jpg'), size=(100,71))
         titulo = ctk.CTkLabel(self, text = 'Sistema de gestão escolar', font=('Century Gothic bold',24), text_color='#fff').place(x=200,y=10)
@@ -62,12 +63,12 @@ class App(ctk.CTk):
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
                 
-            voltar = ctk.CTkButton(master=sistema_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
+            voltar = ctk.CTkButton(master=sistema_frame, text='',image=icon,command= back, width=100, height=40).place(x=20, y=350)
 
             def salva_servico():
                 msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! serviço cadastrado com sucesso")
 
-            salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_servico ).place(x=545, y=350)
+            salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= salva_servico ,width=100, height=40).place(x=580, y=350)
             def tela_perfil():
                 #remover tela inicial
                 inicial_frame.pack_forget()

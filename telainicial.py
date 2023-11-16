@@ -2,6 +2,7 @@ from typing import Optional, Tuple, Union
 import customtkinter as ctk
 from tkinter import *
 from tkinter.ttk import *
+from tkinter import ttk
 from tkinter import messagebox
 import openpyxl, xlrd
 import pathlib
@@ -188,6 +189,8 @@ class App(ctk.CTk, Backend):
 
     def tela_inicial(self):
         # dentro de inicial frame
+        retornar = ctk.CTkImage(Image.open(r'PROJETOMATRIZSOD/icones/casa.png'))
+        adusuario = ctk.CTkImage(Image.open(r'PROJETOMATRIZSOD/icones/adicionar-usuario.png'))
         #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\icon.jpg'), size=(300,200))
         #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\Gestao-escolar.jpg'), size=(700,200))
         #label_img = ctk.CTkLabel(self, image=img, text='').place(x=0,y=10)
@@ -222,9 +225,17 @@ class App(ctk.CTk, Backend):
 
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
-                
-            voltar = ctk.CTkButton(master=sistema_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-            self.salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaSistema).place(x=545, y=350)
+            def consultas():
+                #removendo frame
+                sistema_frame.pack_forget()
+
+                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
+                consulta_frame.pack(side=RIGHT)
+
+
+            voltar = ctk.CTkButton(master=sistema_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
+            self.salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaSistema,width=100, height=40).place(x=580, y=350)
+            consulta = ctk.CTkButton(master=sistema_frame, text='CONSULTAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= consultas,width=100, height=40).place(x=250, y=350)
         def tela_perfil():
             #remover tela inicial
             inicial_frame.pack_forget()
@@ -258,8 +269,8 @@ class App(ctk.CTk, Backend):
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
             
-            voltar = ctk.CTkButton(master=perfil_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-            self.salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaPerfilServico ).place(x=545, y=350)
+            voltar = ctk.CTkButton(master=perfil_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
+            self.salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaPerfilServico ,width=100, height=40).place(x=580, y=350)
             
         def tela_matriz():
             #remover tela inicial
@@ -310,8 +321,8 @@ class App(ctk.CTk, Backend):
 
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
-            voltar = ctk.CTkButton(master=matriz_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
-            salvar = ctk.CTkButton(master=matriz_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaMatriz).place(x=545, y=350)
+            voltar = ctk.CTkButton(master=matriz_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
+            salvar = ctk.CTkButton(master=matriz_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaMatriz,width=100, height=40).place(x=580, y=350)
             
 
         def tela_perfil_user():
@@ -353,16 +364,66 @@ class App(ctk.CTk, Backend):
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
             
-            voltar = ctk.CTkButton(master=perfilU_frame, text='VOLTAR', font=('Century Gothic bold',16), text_color='#fff',command= back ).place(x=20, y=350)
+            voltar = ctk.CTkButton(master=perfilU_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
+            salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser,width=100, height=40 ).place(x=580, y=350)           
+        
+        def tela_listaUser():   
+            #remover tela inicial
+            inicial_frame.pack_forget()
+
+            #criando tela de cadastro de sistema
+            perfillistuser = ctk.CTkFrame(master=self, width=700, height= 400)
+            perfillistuser.pack(side=RIGHT)
+
+            titulo = ctk.CTkLabel(master=perfillistuser, text = 'Lista dos usuarios cadastrados', font=('Century Gothic bold',16),  text_color='gray').place(x=20,y=10)
+            #FILTRANDO OS PERFIS DE CADA SISTEMA
+            dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='PerfilUser')
+            #nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']==pesquisa,'NOME']
+            nomematriz1 = dataframeMatriz1.loc[:,:]
+            nomematriz1 = dataframeMatriz1.loc[:,:]
+            print(len(nomematriz1))
             
-            salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser ).place(x=545, y=350)           
+            """
+            scrollable_frame = ctk.CTkScrollableFrame(master=perfillistuser, width=600, height=250)
+            scrollable_frame.place(x=50,y=50)
+             
+            for i in range(len(nomematriz1)):
+                nomematriz2 = dataframeMatriz1.loc[i,:]
+                print(str(nomematriz2)) 
+                bt =ctk.CTkButton(scrollable_frame, text=str(nomematriz2) + str(i),width=500, height=20)
+                bt.pack()
+              """
+            #teste = ttk.Treeview(master=perfillistuser, columns=('CPF', 'CODIGO', 'NOME'),show='headings').place(x=50,y=50)
+            teste = ttk.Treeview(master=perfillistuser,height=3, columns=('CPF', 'CODIGO', 'NOME'),show='headings')
+            teste.place(x=50,y=50)
             
+            teste.heading('CPF',text='4526845522')
+            teste.heading('CODIGO',text='tes')
+            teste.heading('NOME',text='iranilson')
+            #teste.column('CPF',minwidth=0, width=50)
+            teste.column('CPF', width=50)
+            teste.column('CODIGO', width=250)
+            teste.column('NOME',width=100)
+            
+            #teste.pack()
+
+            def back():
+                #removendo frame
+                perfillistuser.pack_forget()
+
+                #devolvendo frame da tela inicial
+                inicial_frame.pack(side=RIGHT)
+            
+            voltar = ctk.CTkButton(master=perfillistuser, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
+            salvar = ctk.CTkButton(master=perfillistuser, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser,width=100, height=40 ).place(x=580, y=350)
+
+
         #BOTÃOS DA TELA INICIAL 
         cadastroSistema = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_sistemas).place(x=10,y=70)
         cadastroPerfis = ctk.CTkButton(master=inicial_frame,text='Cadastros dos perfis do Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil).place(x=10,y=150)
         cadastroSMatriz = ctk.CTkButton(master=inicial_frame,text='Cadastros da matriz SOD',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_matriz).place(x=400,y=70)
-        cadastroPerfiluser = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Perfils de usuarios',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil_user).place(x=400,y=150)
-
+        cadastroPerfiluser = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Perfils de usuarios',font=('Century Gothic bold',16), text_color='#fff',image=adusuario, width=290, command=tela_perfil_user).place(x=400,y=150)
+        listaUsuarioperfil = ctk.CTkButton(master=inicial_frame,text='Lista de usuarios cadastrados',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_listaUser).place(x=10,y=230)
 if __name__=="__main__":
     app = App()
     app.mainloop()
