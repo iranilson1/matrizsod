@@ -230,48 +230,45 @@ class App(ctk.CTk, Backend):
             def consultas():
                 #removendo frame
                 sistema_frame.pack_forget()
-
-                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
-                consulta_frame.pack(side=RIGHT)
-
-                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
-                #teste.place(x=50,y=50)
                 
-                teste.heading('CODIGO',text='CODIGO')
-                teste.heading('NOME',text='NOME')
+                # Criar um frame com customtkinter
+                consulta_frame = ctk.CTkFrame(self)
+                consulta_frame.pack(padx=10, pady=60)
 
-                #teste.column('CODIGO',minwidth=0, width=250)
-                #teste.column('NOME',minwidth=0,width=100)
-                
-                #teste.pack()
-                # generate sample data
+                # Criar um widget Treeview
+                tree = ttk.Treeview(consulta_frame,height=15, columns=('CODIGO', 'SISTEMA'), show='headings')
+                tree.heading('CODIGO', text='CODIGO')
+                tree.heading('SISTEMA', text='SISTEMA')
+                tree.pack()
+
+                # criando os dados
                 contacts = []
-                for n in range(1, 50):
-                    contacts.append((f'first {n}', f'email{n}@example.com'))
+                dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='Sistema')
 
-                # add data to the treeview
-                for contact in contacts:
-                    teste.insert('', tk.END, values=contact)
-
-
+                for n in range(0,len(dataframe)):
+                    codigs = dataframe.loc[n,:]
+                    tree.insert('', tk.END, values=list(codigs))
+                    
+                
                 def item_selected(event):
-                    for selected_item in teste.selection():
-                        item = teste.item(selected_item)
+                    for selected_item in tree.selection():
+                        item = tree.item(selected_item)
                         record = item['values']
                         # show a message
                         showinfo(title='Information', message=','.join(record))
+                
+                tree.bind('<<TreeviewSelect>>', item_selected)
+                tree.pack(side='top', padx=(5, 5), pady=10, anchor='n')
 
+                def back():
+                    #removendo frame
+                    consulta_frame.pack_forget()
 
-                teste.bind('<<TreeviewSelect>>', item_selected)
+                    #devolvendo frame da tela inicial
+                    sistema_frame.pack(side=RIGHT)
 
-                teste.grid(row=0, column=0, sticky='w')
-
-                # add a scrollbar
-                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
-                teste.configure(yscroll=scrollbar.set)
-                scrollbar.grid(row=0, column=1, sticky='ns')
-                #scrollbar.pack()
-
+                voltar = ctk.CTkButton(master=consulta_frame, text='',image=retornar,command= back, width=100, height=40)
+                voltar.pack(ipady=10)
 
             voltar = ctk.CTkButton(master=sistema_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             self.salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaSistema,width=100, height=40).place(x=580, y=350)
@@ -312,47 +309,46 @@ class App(ctk.CTk, Backend):
             def consultas():
                 #removendo frame
                 perfil_frame.pack_forget()
-
-                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
-                consulta_frame.pack(side=RIGHT)
-
-                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
-                #teste.place(x=50,y=50)
                 
-                teste.heading('CODIGO',text='CODIGO')
-                teste.heading('NOME',text='NOME')
+                # Criar um frame com customtkinter
+                consulta_frame = ctk.CTkFrame(self)
+                consulta_frame.pack(padx=10, pady=60)
 
-                #teste.column('CODIGO',minwidth=0, width=250)
-                #teste.column('NOME',minwidth=0,width=100)
-                
-                #teste.pack()
-                # generate sample data
+                # Criar um widget Treeview
+                tree = ttk.Treeview(consulta_frame,height=15, columns=('CODIGO', 'PERFIL', 'DESCRIÇÃO'), show='headings')
+                tree.heading('CODIGO', text='CODIGO')
+                tree.heading('PERFIL', text='PERFIL')
+                tree.heading('DESCRIÇÃO', text='DESCRIÇÃO')
+                tree.pack()
+
+                # criando os dados
                 contacts = []
-                for n in range(1, 50):
-                    contacts.append((f'first {n}', f'email{n}@example.com'))
+                dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='perfilSistema')
 
-                # add data to the treeview
-                for contact in contacts:
-                    teste.insert('', tk.END, values=contact)
-
-
+                for n in range(0,len(dataframe)):
+                    codigs = dataframe.loc[n,:]
+                    tree.insert('', tk.END, values=list(codigs))
+                    
+                
                 def item_selected(event):
-                    for selected_item in teste.selection():
-                        item = teste.item(selected_item)
+                    for selected_item in tree.selection():
+                        item = tree.item(selected_item)
                         record = item['values']
                         # show a message
                         showinfo(title='Information', message=','.join(record))
+                
+                tree.bind('<<TreeviewSelect>>', item_selected)
+                tree.pack(side='top', padx=(5, 5), pady=10, anchor='n')
 
+                def back():
+                    #removendo frame
+                    consulta_frame.pack_forget()
 
-                teste.bind('<<TreeviewSelect>>', item_selected)
+                    #devolvendo frame da tela inicial
+                    perfil_frame.pack(side=RIGHT)
 
-                teste.grid(row=0, column=0, sticky='w')
-
-                # add a scrollbar
-                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
-                teste.configure(yscroll=scrollbar.set)
-                scrollbar.grid(row=0, column=1, sticky='ns')
-                #scrollbar.pack()
+                voltar = ctk.CTkButton(master=consulta_frame, text='',image=retornar,command= back, width=100, height=40)
+                voltar.pack(ipady=10)
 
             voltar = ctk.CTkButton(master=perfil_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             self.salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaPerfilServico ,width=100, height=40).place(x=580, y=350)
@@ -411,47 +407,47 @@ class App(ctk.CTk, Backend):
             def consultas():
                 #removendo frame
                 matriz_frame.pack_forget()
-
-                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
-                consulta_frame.pack(side=RIGHT)
-
-                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
-                #teste.place(x=50,y=50)
                 
-                teste.heading('CODIGO',text='CODIGO')
-                teste.heading('NOME',text='NOME')
+                # Criar um frame com customtkinter
+                consulta_frame = ctk.CTkFrame(self)
+                consulta_frame.pack(padx=10, pady=60)
 
-                #teste.column('CODIGO',minwidth=0, width=250)
-                #teste.column('NOME',minwidth=0,width=100)
-                
-                #teste.pack()
-                # generate sample data
+                # Criar um widget Treeview
+                tree = ttk.Treeview(consulta_frame,height=15, columns=('CODIGO 1', 'SISTEMA 1','CODIGO 2', 'SISTEMA 2'), show='headings')
+                tree.heading('CODIGO 1', text='CODIGO 1')
+                tree.heading('SISTEMA 1', text='SISTEMA 1')
+                tree.heading('CODIGO 2', text='CODIGO 2')
+                tree.heading('SISTEMA 2', text='SISTEMA 2')
+                tree.pack()
+
+                # criando os dados
                 contacts = []
-                for n in range(1, 50):
-                    contacts.append((f'first {n}', f'email{n}@example.com'))
+                dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='matrizSOD')
 
-                # add data to the treeview
-                for contact in contacts:
-                    teste.insert('', tk.END, values=contact)
-
-
+                for n in range(0,len(dataframe)):
+                    codigs = dataframe.loc[n,:]
+                    tree.insert('', tk.END, values=list(codigs))
+                    
+                
                 def item_selected(event):
-                    for selected_item in teste.selection():
-                        item = teste.item(selected_item)
+                    for selected_item in tree.selection():
+                        item = tree.item(selected_item)
                         record = item['values']
                         # show a message
                         showinfo(title='Information', message=','.join(record))
+                
+                tree.bind('<<TreeviewSelect>>', item_selected)
+                tree.pack(side='top', padx=(5, 5), pady=10, anchor='n')
 
+                def back():
+                    #removendo frame
+                    consulta_frame.pack_forget()
 
-                teste.bind('<<TreeviewSelect>>', item_selected)
+                    #devolvendo frame da tela inicial
+                    matriz_frame.pack(side=RIGHT)
 
-                teste.grid(row=0, column=0, sticky='w')
-
-                # add a scrollbar
-                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
-                teste.configure(yscroll=scrollbar.set)
-                scrollbar.grid(row=0, column=1, sticky='ns')
-                #scrollbar.pack()
+                voltar = ctk.CTkButton(master=consulta_frame, text='',image=retornar,command= back, width=100, height=40)
+                voltar.pack(ipady=10)
 
 
             voltar = ctk.CTkButton(master=matriz_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
@@ -500,47 +496,46 @@ class App(ctk.CTk, Backend):
             def consultas():
                 #removendo frame
                 perfilU_frame.pack_forget()
-
-                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
-                consulta_frame.pack(side=RIGHT)
-
-                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
-                #teste.place(x=50,y=50)
                 
-                teste.heading('CODIGO',text='CODIGO')
-                teste.heading('NOME',text='NOME')
+                # Criar um frame com customtkinter
+                consulta_frame = ctk.CTkFrame(self)
+                consulta_frame.pack(padx=10, pady=60)
 
-                #teste.column('CODIGO',minwidth=0, width=250)
-                #teste.column('NOME',minwidth=0,width=100)
-                
-                #teste.pack()
-                # generate sample data
+                # Criar um widget Treeview
+                tree = ttk.Treeview(consulta_frame,height=15, columns=('CPF','CODIGO', 'SISTEMA'), show='headings')
+                tree.heading('CPF', text='CPF')
+                tree.heading('CODIGO', text='CODIGO')
+                tree.heading('SISTEMA', text='SISTEMA')
+                tree.pack()
+
+                # criando os dados
                 contacts = []
-                for n in range(1, 50):
-                    contacts.append((f'first {n}', f'email{n}@example.com'))
+                dataframe = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='PerfilUser')
 
-                # add data to the treeview
-                for contact in contacts:
-                    teste.insert('', tk.END, values=contact)
-
-
+                for n in range(0,len(dataframe)):
+                    codigs = dataframe.loc[n,:]
+                    tree.insert('', tk.END, values=list(codigs))
+                    
+                
                 def item_selected(event):
-                    for selected_item in teste.selection():
-                        item = teste.item(selected_item)
+                    for selected_item in tree.selection():
+                        item = tree.item(selected_item)
                         record = item['values']
                         # show a message
                         showinfo(title='Information', message=','.join(record))
+                
+                tree.bind('<<TreeviewSelect>>', item_selected)
+                tree.pack(side='top', padx=(5, 5), pady=10, anchor='n')
 
+                def back():
+                    #removendo frame
+                    consulta_frame.pack_forget()
 
-                teste.bind('<<TreeviewSelect>>', item_selected)
+                    #devolvendo frame da tela inicial
+                    perfilU_frame.pack(side=RIGHT)
 
-                teste.grid(row=0, column=0, sticky='w')
-
-                # add a scrollbar
-                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
-                teste.configure(yscroll=scrollbar.set)
-                scrollbar.grid(row=0, column=1, sticky='ns')
-                #scrollbar.pack()
+                voltar = ctk.CTkButton(master=consulta_frame, text='',image=retornar,command= back, width=100, height=40)
+                voltar.pack(ipady=10)
 
             voltar = ctk.CTkButton(master=perfilU_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser,width=100, height=40 ).place(x=580, y=350)           
