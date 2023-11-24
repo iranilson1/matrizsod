@@ -9,6 +9,8 @@ import pathlib
 from openpyxl import Workbook
 from PIL import Image
 import pandas as pd 
+from tkinter.messagebox import showinfo
+import tkinter as tk
 
 class Backend():   
     def salvando(self):
@@ -232,10 +234,48 @@ class App(ctk.CTk, Backend):
                 consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
                 consulta_frame.pack(side=RIGHT)
 
+                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
+                #teste.place(x=50,y=50)
+                
+                teste.heading('CODIGO',text='CODIGO')
+                teste.heading('NOME',text='NOME')
+
+                #teste.column('CODIGO',minwidth=0, width=250)
+                #teste.column('NOME',minwidth=0,width=100)
+                
+                #teste.pack()
+                # generate sample data
+                contacts = []
+                for n in range(1, 50):
+                    contacts.append((f'first {n}', f'email{n}@example.com'))
+
+                # add data to the treeview
+                for contact in contacts:
+                    teste.insert('', tk.END, values=contact)
+
+
+                def item_selected(event):
+                    for selected_item in teste.selection():
+                        item = teste.item(selected_item)
+                        record = item['values']
+                        # show a message
+                        showinfo(title='Information', message=','.join(record))
+
+
+                teste.bind('<<TreeviewSelect>>', item_selected)
+
+                teste.grid(row=0, column=0, sticky='w')
+
+                # add a scrollbar
+                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
+                teste.configure(yscroll=scrollbar.set)
+                scrollbar.grid(row=0, column=1, sticky='ns')
+                #scrollbar.pack()
+
 
             voltar = ctk.CTkButton(master=sistema_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             self.salvar = ctk.CTkButton(master=sistema_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaSistema,width=100, height=40).place(x=580, y=350)
-            consulta = ctk.CTkButton(master=sistema_frame, text='CONSULTAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= consultas,width=100, height=40).place(x=250, y=350)
+            consulta = ctk.CTkButton(master=sistema_frame, text='CONSULTAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= consultas,width=100, height=40).place(x=300, y=350)
         def tela_perfil():
             #remover tela inicial
             inicial_frame.pack_forget()
@@ -250,17 +290,17 @@ class App(ctk.CTk, Backend):
             
 
             titulo = ctk.CTkLabel(master=perfil_frame, text = 'Cadastro do perfil de acesso', font=('Century Gothic bold',16), text_color='gray').place(x=20,y=10)
-            label_codigo_perfil = ctk.CTkLabel(master=perfil_frame, text = 'Digite o código do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=265,y=65)
+            label_codigo_perfil = ctk.CTkLabel(master=perfil_frame, text = 'Digite o código do sistema', font=('Century Gothic bold',16), text_color='#fff').place(x=265,y=40)
             self.codigo_perfil = ctk.CTkComboBox(master=perfil_frame, values=list(valor))
-            self.codigo_perfil.place(x=280, y=100)
+            self.codigo_perfil.place(x=280, y=75)
             
-            label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Nome do perfil', font=('Century Gothic bold',16), text_color='#fff').place(x=295,y=140)
+            label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Nome do perfil', font=('Century Gothic bold',16), text_color='#fff').place(x=295,y=115)
             self.nome_perfil = ctk.CTkEntry(master=perfil_frame,placeholder_text= 'Nome', width=300)
-            self.nome_perfil.place(x=200, y=175)
+            self.nome_perfil.place(x=200, y=150)
 
-            label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Descrição', font=('Century Gothic bold',16), text_color='#fff').place(x=300,y=215)
+            label_nome = ctk.CTkLabel(master=perfil_frame, text = 'Descrição', font=('Century Gothic bold',16), text_color='#fff').place(x=300,y=190)
             self.r_caixaTexto = ctk.CTkTextbox(master=perfil_frame, width=300, height=120, corner_radius=0)
-            self.r_caixaTexto.place(x=200, y=250)
+            self.r_caixaTexto.place(x=200, y=225)
 
             def back():
                 #removendo frame
@@ -269,9 +309,55 @@ class App(ctk.CTk, Backend):
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
             
+            def consultas():
+                #removendo frame
+                perfil_frame.pack_forget()
+
+                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
+                consulta_frame.pack(side=RIGHT)
+
+                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
+                #teste.place(x=50,y=50)
+                
+                teste.heading('CODIGO',text='CODIGO')
+                teste.heading('NOME',text='NOME')
+
+                #teste.column('CODIGO',minwidth=0, width=250)
+                #teste.column('NOME',minwidth=0,width=100)
+                
+                #teste.pack()
+                # generate sample data
+                contacts = []
+                for n in range(1, 50):
+                    contacts.append((f'first {n}', f'email{n}@example.com'))
+
+                # add data to the treeview
+                for contact in contacts:
+                    teste.insert('', tk.END, values=contact)
+
+
+                def item_selected(event):
+                    for selected_item in teste.selection():
+                        item = teste.item(selected_item)
+                        record = item['values']
+                        # show a message
+                        showinfo(title='Information', message=','.join(record))
+
+
+                teste.bind('<<TreeviewSelect>>', item_selected)
+
+                teste.grid(row=0, column=0, sticky='w')
+
+                # add a scrollbar
+                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
+                teste.configure(yscroll=scrollbar.set)
+                scrollbar.grid(row=0, column=1, sticky='ns')
+                #scrollbar.pack()
+
             voltar = ctk.CTkButton(master=perfil_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             self.salvar = ctk.CTkButton(master=perfil_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaPerfilServico ,width=100, height=40).place(x=580, y=350)
-            
+            consulta = ctk.CTkButton(master=perfil_frame, text='CONSULTAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= consultas,width=100, height=40).place(x=300, y=350)
+
         def tela_matriz():
             #remover tela inicial
             inicial_frame.pack_forget()
@@ -321,9 +407,56 @@ class App(ctk.CTk, Backend):
 
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
+
+            def consultas():
+                #removendo frame
+                matriz_frame.pack_forget()
+
+                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
+                consulta_frame.pack(side=RIGHT)
+
+                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
+                #teste.place(x=50,y=50)
+                
+                teste.heading('CODIGO',text='CODIGO')
+                teste.heading('NOME',text='NOME')
+
+                #teste.column('CODIGO',minwidth=0, width=250)
+                #teste.column('NOME',minwidth=0,width=100)
+                
+                #teste.pack()
+                # generate sample data
+                contacts = []
+                for n in range(1, 50):
+                    contacts.append((f'first {n}', f'email{n}@example.com'))
+
+                # add data to the treeview
+                for contact in contacts:
+                    teste.insert('', tk.END, values=contact)
+
+
+                def item_selected(event):
+                    for selected_item in teste.selection():
+                        item = teste.item(selected_item)
+                        record = item['values']
+                        # show a message
+                        showinfo(title='Information', message=','.join(record))
+
+
+                teste.bind('<<TreeviewSelect>>', item_selected)
+
+                teste.grid(row=0, column=0, sticky='w')
+
+                # add a scrollbar
+                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
+                teste.configure(yscroll=scrollbar.set)
+                scrollbar.grid(row=0, column=1, sticky='ns')
+                #scrollbar.pack()
+
+
             voltar = ctk.CTkButton(master=matriz_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             salvar = ctk.CTkButton(master=matriz_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvaMatriz,width=100, height=40).place(x=580, y=350)
-            
+            consulta = ctk.CTkButton(master=matriz_frame, text='CONSULTAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= consultas,width=100, height=40).place(x=300, y=350)
 
         def tela_perfil_user():
             #remover tela inicial
@@ -364,66 +497,61 @@ class App(ctk.CTk, Backend):
                 #devolvendo frame da tela inicial
                 inicial_frame.pack(side=RIGHT)
             
+            def consultas():
+                #removendo frame
+                perfilU_frame.pack_forget()
+
+                consulta_frame = ctk.CTkFrame(master=self, width=700, height= 400)
+                consulta_frame.pack(side=RIGHT)
+
+                teste = ttk.Treeview(master=consulta_frame,height=2, columns=('CODIGO', 'NOME'),show='headings')
+                #teste.place(x=50,y=50)
+                
+                teste.heading('CODIGO',text='CODIGO')
+                teste.heading('NOME',text='NOME')
+
+                #teste.column('CODIGO',minwidth=0, width=250)
+                #teste.column('NOME',minwidth=0,width=100)
+                
+                #teste.pack()
+                # generate sample data
+                contacts = []
+                for n in range(1, 50):
+                    contacts.append((f'first {n}', f'email{n}@example.com'))
+
+                # add data to the treeview
+                for contact in contacts:
+                    teste.insert('', tk.END, values=contact)
+
+
+                def item_selected(event):
+                    for selected_item in teste.selection():
+                        item = teste.item(selected_item)
+                        record = item['values']
+                        # show a message
+                        showinfo(title='Information', message=','.join(record))
+
+
+                teste.bind('<<TreeviewSelect>>', item_selected)
+
+                teste.grid(row=0, column=0, sticky='w')
+
+                # add a scrollbar
+                scrollbar = ttk.Scrollbar(consulta_frame, orient=tk.VERTICAL, command=teste.yview)
+                teste.configure(yscroll=scrollbar.set)
+                scrollbar.grid(row=0, column=1, sticky='ns')
+                #scrollbar.pack()
+
             voltar = ctk.CTkButton(master=perfilU_frame, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
             salvar = ctk.CTkButton(master=perfilU_frame, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser,width=100, height=40 ).place(x=580, y=350)           
-        
-        def tela_listaUser():   
-            #remover tela inicial
-            inicial_frame.pack_forget()
-
-            #criando tela de cadastro de sistema
-            perfillistuser = ctk.CTkFrame(master=self, width=700, height= 400)
-            perfillistuser.pack(side=RIGHT)
-
-            titulo = ctk.CTkLabel(master=perfillistuser, text = 'Lista dos usuarios cadastrados', font=('Century Gothic bold',16),  text_color='gray').place(x=20,y=10)
-            #FILTRANDO OS PERFIS DE CADA SISTEMA
-            dataframeMatriz1 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='PerfilUser')
-            #nomematriz1 = dataframeMatriz1.loc[dataframeMatriz1['CODIGO']==pesquisa,'NOME']
-            nomematriz1 = dataframeMatriz1.loc[:,:]
-            nomematriz1 = dataframeMatriz1.loc[:,:]
-            print(len(nomematriz1))
-            
-            """
-            scrollable_frame = ctk.CTkScrollableFrame(master=perfillistuser, width=600, height=250)
-            scrollable_frame.place(x=50,y=50)
-             
-            for i in range(len(nomematriz1)):
-                nomematriz2 = dataframeMatriz1.loc[i,:]
-                print(str(nomematriz2)) 
-                bt =ctk.CTkButton(scrollable_frame, text=str(nomematriz2) + str(i),width=500, height=20)
-                bt.pack()
-              """
-            #teste = ttk.Treeview(master=perfillistuser, columns=('CPF', 'CODIGO', 'NOME'),show='headings').place(x=50,y=50)
-            teste = ttk.Treeview(master=perfillistuser,height=3, columns=('CPF', 'CODIGO', 'NOME'),show='headings')
-            teste.place(x=50,y=50)
-            
-            teste.heading('CPF',text='4526845522')
-            teste.heading('CODIGO',text='tes')
-            teste.heading('NOME',text='iranilson')
-            #teste.column('CPF',minwidth=0, width=50)
-            teste.column('CPF', width=50)
-            teste.column('CODIGO', width=250)
-            teste.column('NOME',width=100)
-            
-            #teste.pack()
-
-            def back():
-                #removendo frame
-                perfillistuser.pack_forget()
-
-                #devolvendo frame da tela inicial
-                inicial_frame.pack(side=RIGHT)
-            
-            voltar = ctk.CTkButton(master=perfillistuser, text='',image=retornar,command= back, width=100, height=40).place(x=20, y=350)
-            salvar = ctk.CTkButton(master=perfillistuser, text='SALVAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= self.salvarUser,width=100, height=40 ).place(x=580, y=350)
-
+            consulta = ctk.CTkButton(master=perfilU_frame, text='CONSULTAR', font=('Century Gothic bold',16), text_color='#fff', fg_color='green',hover_color="#014B05", command= consultas,width=100, height=40).place(x=300, y=350)
 
         #BOTÃOS DA TELA INICIAL 
         cadastroSistema = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_sistemas).place(x=10,y=70)
         cadastroPerfis = ctk.CTkButton(master=inicial_frame,text='Cadastros dos perfis do Sistemas',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_perfil).place(x=10,y=150)
         cadastroSMatriz = ctk.CTkButton(master=inicial_frame,text='Cadastros da matriz SOD',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_matriz).place(x=400,y=70)
         cadastroPerfiluser = ctk.CTkButton(master=inicial_frame,text='Cadastros dos Perfils de usuarios',font=('Century Gothic bold',16), text_color='#fff',image=adusuario, width=290, command=tela_perfil_user).place(x=400,y=150)
-        listaUsuarioperfil = ctk.CTkButton(master=inicial_frame,text='Lista de usuarios cadastrados',font=('Century Gothic bold',16), text_color='#fff', width=290, command=tela_listaUser).place(x=10,y=230)
+        
 if __name__=="__main__":
     app = App()
     app.mainloop()
