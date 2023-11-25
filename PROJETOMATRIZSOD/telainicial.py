@@ -11,6 +11,7 @@ from PIL import Image
 import pandas as pd 
 from tkinter.messagebox import showinfo
 import tkinter as tk
+import os
 
 class Backend():   
     def salvando(self):
@@ -191,8 +192,20 @@ class App(ctk.CTk, Backend):
 
     def tela_inicial(self):
         # dentro de inicial frame
-        retornar = ctk.CTkImage(Image.open(r'PROJETOMATRIZSOD/icones/casa.png'))
-        adusuario = ctk.CTkImage(Image.open(r'PROJETOMATRIZSOD/icones/adicionar-usuario.png'))
+        # Obtém o diretório atual do arquivo .py
+        diretorio_atual = os.path.dirname(os.path.abspath(__file__))
+
+        # Constrói o caminho para a pasta de ícones
+        pasta_icones = os.path.join(diretorio_atual, 'icones')
+
+        # Nome do arquivo
+        casa = 'casa.png'
+        user = 'adicionar-usuario.png'
+
+        # Usa o caminho do arquivo como argumento para CTkImage
+        retornar = ctk.CTkImage(Image.open(os.path.join(pasta_icones, casa)))
+        #retornar = ctk.CTkImage(Image.open(r''))
+        adusuario = ctk.CTkImage(Image.open(os.path.join(pasta_icones, user)))
         #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\icon.jpg'), size=(300,200))
         #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\Gestao-escolar.jpg'), size=(700,200))
         #label_img = ctk.CTkLabel(self, image=img, text='').place(x=0,y=10)
