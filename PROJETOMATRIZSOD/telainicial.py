@@ -139,7 +139,7 @@ class Backend():
         nomematriz2 = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,'NOME']
 
         # Verifique a unicidade dos valores na coluna
-        cpf_duplicados = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,'CPF']
+        #cpf_duplicados = dataframeMatriz1.loc[dataframeMatriz1['CPF']==self.cpfs,'CPF']
 
         #apos isso busco todos os conflitos que o sistema digitado tem
         dataframeMatriz2 = pd.read_excel('.\sistemaEscola.xlsx', sheet_name='matrizSOD')
@@ -150,28 +150,28 @@ class Backend():
         erro=0
         if(self.cpfs=='' or self.codigo=='' or self.nome==''):
             messagebox.showerror('sistema','ERRO\n Por favor selecione todos os campos')    
-        elif(not list(cpf_duplicados)):
-            for i in conflito:
-                if i in  list(nomematriz2) :
-                    messagebox.showerror('sistema','ERRO\n Perfil conflitante com um ja cadastrado')
-                    erro = 1
-                    break
-            if erro == 0:
-                #salvar os dados na folha do excel
-                arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
-                folha4 = arquivo.get_sheet_by_name(r'PerfilUser')
-                folha4.cell(column=1, row=folha4.max_row+1, value=self.cpfs)
-                folha4.cell(column=2, row=folha4.max_row, value=self.codigo)
-                folha4.cell(column=3, row=folha4.max_row, value=self.nome)
-                arquivo.save(r'sistemaEscola.xlsx')
-                msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! Perfil de usuario cadastrado com sucesso")
+        #elif(not list(cpf_duplicados)):
+        for i in conflito:
+            if i in  list(nomematriz2) :
+                messagebox.showerror('sistema','ERRO\n Perfil conflitante com um ja cadastrado')
+                erro = 1
+                break
+        if erro == 0:
+            #salvar os dados na folha do excel
+            arquivo = openpyxl.load_workbook(r'sistemaEscola.xlsx')
+            folha4 = arquivo.get_sheet_by_name(r'PerfilUser')
+            folha4.cell(column=1, row=folha4.max_row+1, value=self.cpfs)
+            folha4.cell(column=2, row=folha4.max_row, value=self.codigo)
+            folha4.cell(column=3, row=folha4.max_row, value=self.nome)
+            arquivo.save(r'sistemaEscola.xlsx')
+            msg = messagebox.showinfo(title='Estado do cadastro', message= "Parabens! Perfil de usuario cadastrado com sucesso")
 
-                #apagando o texto das entrys
-                #self.cpf.set('')
-                self.codigo_sistema.set('')
-                self.nome_sistema.set('')
-        else:
-            messagebox.showerror('sistema', 'ERRO\n CPF ja cadastrado, veja a lista de cpfs cadastrados' )        
+            #apagando o texto das entrys
+            #self.cpf.set('')
+            self.codigo_sistema.set('')
+            self.nome_sistema.set('')
+        #else:
+        #    messagebox.showerror('sistema', 'ERRO\n CPF ja cadastrado, veja a lista de cpfs cadastrados' )        
 
 class App(ctk.CTk, Backend):
     def __init__(self):
@@ -195,23 +195,12 @@ class App(ctk.CTk, Backend):
         # Obtém o diretório atual do arquivo .py
         diretorio_atual = os.path.dirname(os.path.abspath(__file__))
 
-        # Constrói o caminho para a pasta de ícones
-        pasta_icones = os.path.join(diretorio_atual, 'icones')
-
-        # Nome do arquivo
-        casa = 'casa.png'
-        user = 'adicionar-usuario.png'
-
         # Usa o caminho do arquivo como argumento para CTkImage
-        retornar = ctk.CTkImage(Image.open(os.path.join(pasta_icones, casa)))
-        #retornar = ctk.CTkImage(Image.open(r''))
-        adusuario = ctk.CTkImage(Image.open(os.path.join(pasta_icones, user)))
-        #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\icon.jpg'), size=(300,200))
-        #img = ctk.CTkImage(Image.open(r'C:\Users\irani\SynologyDrive\fullstack\trabalhos\matrizSOD\PROJETOMATRIZSOD\Gestao-escolar.jpg'), size=(700,200))
-        #label_img = ctk.CTkLabel(self, image=img, text='').place(x=0,y=10)
+        retornar = ctk.CTkImage(Image.open(os.path.join(os.path.join(diretorio_atual, 'icones'),  'casa.png')))
+        adusuario = ctk.CTkImage(Image.open(os.path.join(os.path.join(diretorio_atual, 'icones'), 'adicionar-usuario.png')))
+
         titulo = ctk.CTkLabel(self, text = 'Sistema de gestão escolar', font=('Century Gothic bold',24), text_color='#fff').place(x=200,y=10)
-        #subtitulo = ctk.CTkLabel(self, text='Por favor, preencha todos os campos do formulario', font=('Century Gothic bold',12), text_color='#fff').place(x=0,y=40)
-        
+
         #frame
         inicial_frame = ctk.CTkFrame(master=self, width=700, height= 400)
         inicial_frame.pack(side=RIGHT)
@@ -534,8 +523,9 @@ class App(ctk.CTk, Backend):
                     for selected_item in tree.selection():
                         item = tree.item(selected_item)
                         record = item['values']
+                        #print(record)
                         # show a message
-                        showinfo(title='Information', message=','.join(record))
+                        #showinfo(title='Information', message=','.join(str(record)))
                 
                 tree.bind('<<TreeviewSelect>>', item_selected)
                 tree.pack(side='top', padx=(5, 5), pady=10, anchor='n')
