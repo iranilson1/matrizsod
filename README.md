@@ -1,2 +1,2 @@
 # matrizsod
-o arquivo esta nesta pasta, e queria tentar manter a mesma configuração de pastas ao baixar, não precisa retirar de nenhuma pasta, nosso arquivo estava sendo executado no vscode e se surgir algum erro no salvamento do arquivo noexcel poderia tentar puxar todas as pastas como um repositorio 
+um projeto feito para gerenciar relacionamentos conflitantes entre determinadas entidades de modelo. então neste projeto é mostrado a relação de conflitos e o tratamento dessas questões 
